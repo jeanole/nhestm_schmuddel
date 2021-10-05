@@ -66,15 +66,14 @@ void startEthernet(){
 void messageReceived(String &topic, String &payload) {
     Serial.println("got message:" + topic+ " -> " + payload);
 
-    switch  (topic)
-    {
-        case "schmuddel/setregulatorvalue":
-            break;
-        case "schmuddel/setregulatorbase":
-       basedeviderconst = 
-        default:
-            Serial.println("couldnt interprete message:" + topic+ " -> " + payload);
-            break;
+    if(topic =="schmuddel/setregulatorvalue"){
+        set_regulator(payload.toInt());
+    }
+    else if(topic == "schmuddel/setregulatorbase"){
+       basedeviderconst = payload.toInt();
+    }
+    else{
+        Serial.println("couldnt interprete message:" + topic+ " -> " + payload);
     }
 
 }
