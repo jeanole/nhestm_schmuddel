@@ -1,0 +1,62 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "/home/archimedes/devel/nhestm/experiments/11-13_aerodynamic_sculpture/pressure_regulator/include",
+                "/home/archimedes/devel/nhestm/experiments/11-13_aerodynamic_sculpture/pressure_regulator/src",
+                "/home/archimedes/devel/nhestm/experiments/11-13_aerodynamic_sculpture/pressure_regulator/.pio/libdeps/megaatmega2560/JC_Button/src",
+                "/home/archimedes/devel/nhestm/experiments/11-13_aerodynamic_sculpture/pressure_regulator/.pio/libdeps/megaatmega2560/AMDX AIO/src",
+                "/home/archimedes/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                "/home/archimedes/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                "/home/archimedes/.platformio/packages/framework-arduino-avr/cores/arduino",
+                "/home/archimedes/.platformio/packages/framework-arduino-avr/variants/mega",
+                "/home/archimedes/devel/nhestm/experiments/11-13_aerodynamic_sculpture/pressure_regulator/.pio/libdeps/megaatmega2560/AMDX AIO@src-20816595eae4d2429d4563822b7f769c/src",
+                "/home/archimedes/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                "/home/archimedes/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                "/home/archimedes/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "/home/archimedes/devel/nhestm/experiments/11-13_aerodynamic_sculpture/pressure_regulator/include",
+                    "/home/archimedes/devel/nhestm/experiments/11-13_aerodynamic_sculpture/pressure_regulator/src",
+                    "/home/archimedes/devel/nhestm/experiments/11-13_aerodynamic_sculpture/pressure_regulator/.pio/libdeps/megaatmega2560/JC_Button/src",
+                    "/home/archimedes/devel/nhestm/experiments/11-13_aerodynamic_sculpture/pressure_regulator/.pio/libdeps/megaatmega2560/AMDX AIO/src",
+                    "/home/archimedes/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                    "/home/archimedes/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                    "/home/archimedes/.platformio/packages/framework-arduino-avr/cores/arduino",
+                    "/home/archimedes/.platformio/packages/framework-arduino-avr/variants/mega",
+                    "/home/archimedes/devel/nhestm/experiments/11-13_aerodynamic_sculpture/pressure_regulator/.pio/libdeps/megaatmega2560/AMDX AIO@src-20816595eae4d2429d4563822b7f769c/src",
+                    "/home/archimedes/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                    "/home/archimedes/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                    "/home/archimedes/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=50200",
+                "ARDUINO_AVR_MEGA2560",
+                "F_CPU=16000000L",
+                "ARDUINO_ARCH_AVR",
+                "ARDUINO=10808",
+                "__AVR_ATmega2560__",
+                ""
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "/home/archimedes/.platformio/packages/toolchain-atmelavr/bin/avr-gcc",
+            "compilerArgs": [
+                "-mmcu=atmega2560",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}
