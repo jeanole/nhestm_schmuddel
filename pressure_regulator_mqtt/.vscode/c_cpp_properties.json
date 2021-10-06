@@ -10,6 +10,7 @@
             "includePath": [
                 "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/include",
                 "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/src",
+                "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/.pio/libdeps/megaatmega2560/MQTT/src",
                 "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/.pio/libdeps/megaatmega2560/ArduinoJson/src",
                 "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/.pio/libdeps/megaatmega2560/Ethernet/src",
                 "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/.pio/libdeps/megaatmega2560/JC_Button/src",
@@ -29,6 +30,7 @@
                 "path": [
                     "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/include",
                     "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/src",
+                    "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/.pio/libdeps/megaatmega2560/MQTT/src",
                     "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/.pio/libdeps/megaatmega2560/ArduinoJson/src",
                     "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/.pio/libdeps/megaatmega2560/Ethernet/src",
                     "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/pressure_regulator_mqtt/.pio/libdeps/megaatmega2560/JC_Button/src",
