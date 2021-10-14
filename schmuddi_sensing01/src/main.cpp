@@ -147,9 +147,7 @@ void setup() {
   }
 client.begin(mqtt_ip,mqtt_port, EtherClient);
   client.onMessage(messageReceived);
-
   connect();
-
 }
 
 String bolsch(boolean input){
@@ -181,7 +179,7 @@ String buffer = "{" + pressureVal + flowVal + r1 +r2 +r3 +r4 + "}";
   if (!client.connected()){
     connect();
   }
-  if (millis() - lastMillis > 100) {
+  if (millis() - lastMillis > 1000) {
     lastMillis = millis();
     //client.publish("schmuddel/pressure", String(pressureValue)); //
     //client.publish("schmuddel/flow", String(flowValue));
