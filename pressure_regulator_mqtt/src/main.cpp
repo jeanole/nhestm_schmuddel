@@ -31,13 +31,24 @@ uint8_t basedeviderconst = 100;
 
 DAC dac;
 
-void set_regulator(float percent, float basedevider=100)
+//sweep
+float sweep_maxvalue = 200;
+float sweep_minvalue = 0;
+int sweep_duration = 1000; //ms
+float sweep_currentflow = 0;
+float startTime = 0;
+float currentSetPressure = 0;
+
+void set_regulator(float percent, float basedevider=1024)
 {
     uint16_t outvalue = min(percent / basedevider * 4095, 4095);
 
     dac.set_value(DAC::CHANNEL_A, outvalue, DAC::GAIN_2X);
     dac.sync_ldac();
-    mqttclient.publish("schmuddel/pressureregulator/setval", String(outvalue));
+
+    currentSetPressure = percent;
+
+    mqttclient.publish("schmuddel/pressureregulator/setval", String(percent));
     mqttclient.publish("schmuddel/pressureregulator/base", String(basedevider));
     Serial.print("set regulator to: ");
     Serial.print(outvalue );
@@ -55,11 +66,60 @@ void messageReceived(String &topic, String &payload) {
     else if(topic == "schmuddel/setregulatorbase"){
        basedeviderconst = payload.toInt();
     }
-    else{
+    else if(topic == "schmuddel/sweep")
+      {
+        sweep(1);
         //Serial.println("couldnt interprete message:" + topic+ " -> " + payload);
+    }
+    else if(topic == "schmuddel/sweep/maxvalue"){
+      sweep_maxvalue = payload.toFloat();
+    }
+    else if(topic == "schmuddel/sweep/minvalue"){
+      sweep_minvalue = payload.toFloat();
+    }
+    else if(topic == "schmuddel/sweep/duration"){
+      sweep_duration = payload.toInt();
+    else if(topic == "schmuddel/sweep/currentflow"){
+      sweep_currentflow = payload.toFloat();
+      sweep();
     }
 
 }
+
+void sweep(int start = 0){
+  if(start = 1){
+    startTime = millis();
+
+  }
+   if(sweep_currentflow < sweep_minvalue){
+     increasepressure();
+   }
+   else if(sweep_currentflow > sweep_maxvalue){
+     godown = true;
+     decreasepressure();
+   }
+   else if(sweep_currentflow < sweep_minvalue && godown){
+     godown = false;
+     increasepressure();
+   }else if(sweep_currentflow< sweep_maxvalue && sweep_currentflow> sweep_minvalue){
+     if(godown){
+       decreasepressure();
+     }else{
+       increasepressure();
+     }
+   }
+}
+
+void decreasepressure(){
+  float factor = (sweep_maxvalue - sweep_minvalue)/sweep_duration;
+  set_regulator(currentSetPressure + factor)
+}
+
+void increasepressure(){
+  float factor = (sweep_maxvalue - sweep_minvalue)/sweep_duration;
+  set_regulator(currentSetPressure - factor)
+}
+
 void connect(){
   Serial.println("connecting...");
   while (!mqttclient.connect(mqqt_name)){
