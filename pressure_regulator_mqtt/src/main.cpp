@@ -38,6 +38,8 @@ int sweep_duration = 1000; //ms
 float sweep_currentflow = 0;
 float startTime = 0;
 float currentSetPressure = 0;
+boolean godown = false;
+float lastmillis = 0;
 
 void set_regulator(float percent, float basedevider=1024)
 {
@@ -56,41 +58,31 @@ void set_regulator(float percent, float basedevider=1024)
     Serial.println( basedevider);
 
 }
+void decreasepressure(){
+int currentmillis = millis();
+  float dif = abs(currentmillis-lastmillis);
+  float factor = ((sweep_maxvalue - sweep_minvalue)/sweep_duration)*dif;  Serial.println(factor);
+    Serial.print("decrease: ");
+  Serial.println(factor);
+  set_regulator(currentSetPressure - factor/1000);
+    lastmillis = currentmillis;
+}
 
-void messageReceived(String &topic, String &payload) {
-    Serial.println("got message:" + topic+ " -> " + payload);
-
-    if(topic =="schmuddel/setregulatorvalue"){
-        set_regulator(payload.toInt());
-    }
-    else if(topic == "schmuddel/setregulatorbase"){
-       basedeviderconst = payload.toInt();
-    }
-    else if(topic == "schmuddel/sweep")
-      {
-        sweep(1);
-        //Serial.println("couldnt interprete message:" + topic+ " -> " + payload);
-    }
-    else if(topic == "schmuddel/sweep/maxvalue"){
-      sweep_maxvalue = payload.toFloat();
-    }
-    else if(topic == "schmuddel/sweep/minvalue"){
-      sweep_minvalue = payload.toFloat();
-    }
-    else if(topic == "schmuddel/sweep/duration"){
-      sweep_duration = payload.toInt();
-    else if(topic == "schmuddel/sweep/currentflow"){
-      sweep_currentflow = payload.toFloat();
-      sweep();
-    }
-
+void increasepressure(){
+  int currentmillis = millis();
+  float dif = abs(currentmillis - lastmillis);
+  float factor = ((sweep_maxvalue - sweep_minvalue)/sweep_duration)*dif;
+  Serial.print("increase: ");
+  Serial.println(factor);
+  set_regulator(currentSetPressure + factor/1000);
+  lastmillis = currentmillis;
 }
 
 void sweep(int start = 0){
-  if(start = 1){
+  if(startTime==0){
     startTime = millis();
-
-  }
+    lastmillis = millis();
+  }else{
    if(sweep_currentflow < sweep_minvalue){
      increasepressure();
    }
@@ -108,16 +100,38 @@ void sweep(int start = 0){
        increasepressure();
      }
    }
+  }
 }
 
-void decreasepressure(){
-  float factor = (sweep_maxvalue - sweep_minvalue)/sweep_duration;
-  set_regulator(currentSetPressure + factor)
-}
+void messageReceived(String &topic, String &payload) {
+    //Serial.println("got message:" + topic+ " -> " + payload);
 
-void increasepressure(){
-  float factor = (sweep_maxvalue - sweep_minvalue)/sweep_duration;
-  set_regulator(currentSetPressure - factor)
+    if(topic =="schmuddel/setregulatorvalue"){
+        set_regulator(payload.toInt());
+    }
+    else if(topic == "schmuddel/setregulatorbase"){
+       basedeviderconst = payload.toInt();
+    }
+    else if(topic == "schmuddel/sweep")
+    {
+      startTime = 0;
+        sweep();
+        //Serial.println("couldnt interprete message:" + topic+ " -> " + payload);
+    }
+    else if(topic == "schmuddel/sweep/maxvalue"){
+      sweep_maxvalue = payload.toFloat();
+    }
+    else if(topic == "schmuddel/sweep/minvalue"){
+      sweep_minvalue = payload.toFloat();
+    }
+    else if(topic == "schmuddel/sweep/duration"){
+      startTime = 0;
+      sweep_duration = payload.toInt();
+    }
+    else if(topic == "schmuddel/sweep/currentflow"){
+      sweep_currentflow = payload.toFloat();
+      sweep();
+    }
 }
 
 void connect(){
