@@ -43,7 +43,8 @@ float lastmillis = 0;
 
 void set_regulator(float percent, float basedevider=1024)
 {
-    uint16_t outvalue = min(percent / basedevider * 4095, 4095);
+    percent = min(percent, 1024);
+    uint16_t outvalue = percent / basedevider * 4095;
 
     dac.set_value(DAC::CHANNEL_A, outvalue, DAC::GAIN_2X);
     dac.sync_ldac();
@@ -54,27 +55,28 @@ void set_regulator(float percent, float basedevider=1024)
     mqttclient.publish("schmuddel/pressureregulator/base", String(basedevider));
     Serial.print("set regulator to: ");
     Serial.print(outvalue );
-    Serial.print( "@basedevider: ");
+    Serial.print( " @basedevider: ");
     Serial.println( basedevider);
 
 }
 void decreasepressure(){
 int currentmillis = millis();
   float dif = abs(currentmillis-lastmillis);
-  float factor = ((sweep_maxvalue - sweep_minvalue)/sweep_duration)*dif;  Serial.println(factor);
+  float factor = (sweep_duration)*dif;
+    Serial.println(factor);
     Serial.print("decrease: ");
   Serial.println(factor);
-  set_regulator(currentSetPressure - factor/1000);
+  set_regulator(currentSetPressure - factor/100);
     lastmillis = currentmillis;
 }
 
 void increasepressure(){
   int currentmillis = millis();
   float dif = abs(currentmillis - lastmillis);
-  float factor = ((sweep_maxvalue - sweep_minvalue)/sweep_duration)*dif;
+  float factor = (sweep_duration)*dif;
   Serial.print("increase: ");
   Serial.println(factor);
-  set_regulator(currentSetPressure + factor/1000);
+  set_regulator(currentSetPressure + factor/100);
   lastmillis = currentmillis;
 }
 
