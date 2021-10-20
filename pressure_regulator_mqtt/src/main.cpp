@@ -40,10 +40,12 @@ float startTime = 0;
 float currentSetPressure = 0;
 boolean godown = false;
 float lastmillis = 0;
+int nbrCycle = 0;
+
 
 void set_regulator(float percent, float basedevider=1024)
 {
-    percent = min(percent, 1024);
+    percent = min(percent, basedevider);
     percent = max(percent, 0);
     uint16_t outvalue = percent / basedevider * 4095;
 
@@ -70,7 +72,7 @@ int currentmillis = millis();
   set_regulator(currentSetPressure - factor);
     lastmillis = currentmillis;
   mqttclient.publish("schmuddel/sweep/message", "DOWN");
-
+  mqttclient.publish("schmuddel/sweep/nbrCycle", String(nbrCycle));
 }
 
 void increasepressure(){
@@ -86,8 +88,42 @@ void increasepressure(){
 
   set_regulator(currentSetPressure + factor);
   lastmillis = currentmillis;
-    mqttclient.publish("schmuddel/sweep/message", "UP");
+  mqttclient.publish("schmuddel/sweep/message", "UP");
+  mqttclient.publish("schmuddel/sweep/nbrCycle", String(nbrCycle));
 
+}
+void waschgang(){
+  String valves[4] = {"schmuddel/r1", "schmuddel/r2", "schmuddel/r3", "schmuddel/r4"};
+  set_regulator(0,100);
+  delay(2000);
+  //all valves off
+  for(int i=0;i<4; i++){
+    mqttclient.publish(valves[i], "false");
+    delay(2000);
+  }
+  set_regulator(60,100);
+  //all valves on
+  for(int i=0;i<4; i++){
+    mqttclient.publish(valves[i], "true");
+    delay(2000);
+  }
+  //all valves off
+  for(int i=0;i<4; i++){
+    mqttclient.publish(valves[i], "false");
+    delay(2000);
+  }
+  //random switching valves
+  int n = 0;
+  int rand = 0;
+
+  while(n<20){
+    rand = random(0,3);
+    mqttclient.publish(valves[rand],"true");
+    delay(200);
+    mqttclient.publish(valves[rand],"false");
+    delay(100);
+    n++;
+  }
 }
 
 void sweep(int start = 0){
@@ -98,10 +134,12 @@ void sweep(int start = 0){
    if(sweep_currentflow < sweep_minvalue){
      increasepressure();
      godown = false;
+     nbrCycle++;
    }
    else if(sweep_currentflow > sweep_maxvalue){
      godown = true;
      decreasepressure();
+     nbrCycle++;
    }
    else if(sweep_currentflow< sweep_maxvalue && sweep_currentflow> sweep_minvalue){
      if(godown){
@@ -143,6 +181,11 @@ void messageReceived(String &topic, String &payload) {
     else if(topic == "schmuddel/sweep/currentflow"){
       sweep_currentflow = payload.toFloat();
       sweep();
+    }
+    else if(topic == "schmuddel/waschgang"){
+      if(payload == "true"){
+        waschgang();
+      }
     }
 }
 
