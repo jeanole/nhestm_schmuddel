@@ -105,7 +105,7 @@ void waschgang(){
   //all valves on
   for(int i=0;i<4; i++){
     mqttclient.publish(valves[i], "true");
-    delay(2000);
+    delay(1000);
   }
   //all valves off
   for(int i=0;i<4; i++){
@@ -124,6 +124,14 @@ void waschgang(){
     delay(100);
     n++;
   }
+  delay(1000);
+  set_regulator(0,100);
+  //all valves on
+  for(int i=0;i<4; i++){
+    mqttclient.publish(valves[i], "true");
+  }
+  delay(500);
+
 }
 
 void sweep(int start = 0){
@@ -185,6 +193,7 @@ void messageReceived(String &topic, String &payload) {
     else if(topic == "schmuddel/waschgang"){
       if(payload == "true"){
         waschgang();
+        startTime = 0;
       }
     }
 }
