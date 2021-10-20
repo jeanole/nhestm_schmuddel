@@ -32,9 +32,9 @@ uint8_t basedeviderconst = 100;
 DAC dac;
 
 //sweep
-float sweep_maxvalue = 200;
-float sweep_minvalue = 0;
-int sweep_duration = 1000; //ms
+float sweep_maxvalue = 10;
+float sweep_minvalue = 1;
+float sweep_duration = 0; //ms
 float sweep_currentflow = 0;
 float startTime = 0;
 float currentSetPressure = 0;
@@ -44,6 +44,7 @@ float lastmillis = 0;
 void set_regulator(float percent, float basedevider=1024)
 {
     percent = min(percent, 1024);
+    percent = max(percent, 0);
     uint16_t outvalue = percent / basedevider * 4095;
 
     dac.set_value(DAC::CHANNEL_A, outvalue, DAC::GAIN_2X);
@@ -55,29 +56,38 @@ void set_regulator(float percent, float basedevider=1024)
     mqttclient.publish("schmuddel/pressureregulator/base", String(basedevider));
     Serial.print("set regulator to: ");
     Serial.print(outvalue );
-    Serial.print( " @basedevider: ");
-    Serial.println( basedevider);
+    Serial.print( " @percent: ");
+    Serial.println( percent);
 
 }
 void decreasepressure(){
 int currentmillis = millis();
   float dif = abs(currentmillis-lastmillis);
-  float factor = (sweep_duration)*dif;
+  float factor = (sweep_duration)*dif/1000;
     Serial.println(factor);
     Serial.print("decrease: ");
   Serial.println(factor);
-  set_regulator(currentSetPressure - factor/100);
+  set_regulator(currentSetPressure - factor);
     lastmillis = currentmillis;
+  mqttclient.publish("schmuddel/sweep/message", "DOWN");
+
 }
 
 void increasepressure(){
   int currentmillis = millis();
   float dif = abs(currentmillis - lastmillis);
-  float factor = (sweep_duration)*dif;
-  Serial.print("increase: ");
+  float factor = (sweep_duration)*dif/1000;
+  Serial.print("duration: ");
+  Serial.println(sweep_duration);
+  Serial.print("dif: ");
+  Serial.println(dif);
+  Serial.print(" increase: ");
   Serial.println(factor);
-  set_regulator(currentSetPressure + factor/100);
+
+  set_regulator(currentSetPressure + factor);
   lastmillis = currentmillis;
+    mqttclient.publish("schmuddel/sweep/message", "UP");
+
 }
 
 void sweep(int start = 0){
@@ -87,19 +97,20 @@ void sweep(int start = 0){
   }else{
    if(sweep_currentflow < sweep_minvalue){
      increasepressure();
+     godown = false;
    }
    else if(sweep_currentflow > sweep_maxvalue){
      godown = true;
      decreasepressure();
    }
-   else if(sweep_currentflow < sweep_minvalue && godown){
-     godown = false;
-     increasepressure();
-   }else if(sweep_currentflow< sweep_maxvalue && sweep_currentflow> sweep_minvalue){
+   else if(sweep_currentflow< sweep_maxvalue && sweep_currentflow> sweep_minvalue){
      if(godown){
        decreasepressure();
+       Serial.println("DOWN");
      }else{
        increasepressure();
+       Serial.println("UP");
+
      }
    }
   }
@@ -127,8 +138,7 @@ void messageReceived(String &topic, String &payload) {
       sweep_minvalue = payload.toFloat();
     }
     else if(topic == "schmuddel/sweep/duration"){
-      startTime = 0;
-      sweep_duration = payload.toInt();
+      sweep_duration = payload.toFloat();
     }
     else if(topic == "schmuddel/sweep/currentflow"){
       sweep_currentflow = payload.toFloat();
