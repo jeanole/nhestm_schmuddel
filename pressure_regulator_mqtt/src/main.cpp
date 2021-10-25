@@ -78,9 +78,9 @@ int currentmillis = millis();
 void increasepressure(){
   int currentmillis = millis();
   float dif = abs(currentmillis - lastmillis);
-  float factor = (sweep_duration)*dif/1000;
+  float factor = (sq(sweep_duration))*dif/1000;
   Serial.print("duration: ");
-  Serial.println(sweep_duration);
+  Serial.println(sq(sweep_duration));
   Serial.print("dif: ");
   Serial.println(dif);
   Serial.print(" increase: ");
