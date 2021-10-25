@@ -126,11 +126,12 @@ void waschgang(){
   }
   delay(1000);
   set_regulator(0,100);
+  delay(500);
   //all valves on
   for(int i=0;i<4; i++){
     mqttclient.publish(valves[i], "true");
   }
-  delay(500);
+  delay(2000);
 
 }
 
