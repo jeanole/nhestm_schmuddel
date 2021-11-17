@@ -29,6 +29,16 @@
             "projectEnvName": "megaatmega2560",
             "toolchainBinDir": "C:/Users/Jens/.platformio/packages/toolchain-atmelavr/bin",
             "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (without uploading)",
+            "executable": "C:/Users/Jens/Documents/PlatformIO/Projects/nhestm_schmuddel/schmuddi_sensing01/.pio/build/megaatmega2560/firmware.elf",
+            "projectEnvName": "megaatmega2560",
+            "toolchainBinDir": "C:/Users/Jens/.platformio/packages/toolchain-atmelavr/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "loadMode": "manual"
         }
     ]
 }

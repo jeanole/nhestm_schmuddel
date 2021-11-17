@@ -16,6 +16,8 @@ const uint8_t VALVE_2 = X2;
 const uint8_t VALVE_3 = X3;
 const uint8_t VALVE_4 = X4;
 
+const uint8_t IMPULS_PIN = A3;
+
 boolean valveState[4] ={};
 
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
@@ -30,6 +32,7 @@ unsigned long lastMillis = 0;
 
 uint16_t pressureValue = 0;
 uint16_t flowValue = 0;
+boolean impulseValue = false;
 
 const char *mqqt_name = "jeandino";
 const char *mqtt_key = "public";//"schmuddi"; //(username)
@@ -163,6 +166,9 @@ void loop() {
   //Serial.println("bummsnase");
   pressureValue = analogRead(P_PIN);
   flowValue = analogRead(FLOW_PIN);
+  impulseValue = digitalRead(IMPULS_PIN);
+  client.publish("schmuddel/volume/impulse", String(impulseValue));
+
 //json
 String pressureVal = String(pressureValue);
 pressureVal = " \"pressure\" : " + pressureVal + ", ";
@@ -174,6 +180,7 @@ String r3 = " \"valve3\" : " + String(valveState[2]) + ", ";
 String r4 = " \"valve4\" : " + String(valveState[3]) + " ";
 String buffer = "{" + pressureVal + flowVal + r1 +r2 +r3 +r4 + "}";
 //json
+digitalRead(IMPULS_PIN);
 
   client.loop();
   if (!client.connected()){
